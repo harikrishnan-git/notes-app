@@ -5,6 +5,7 @@ import { MdDelete } from "react-icons/md"; // Delete icon
 import "./App.css";
 
 function App() {
+  const baseURL = "http://localhost:3000"; // Base URL for API requests
   let items = []; // Temporary variable for holding updated notes
   const [notes, setNotes] = useState([]); // State to store notes
   const [inputData, setInputData] = useState(""); // State to store input value
@@ -12,7 +13,7 @@ function App() {
   // useEffect runs once on component mount to fetch existing notes
   useEffect(() => {
     const func = async () => {
-      axios.get("http://localhost:3000/notes").then((recNotes) => {
+      axios.get(`${baseURL}/notes`).then((recNotes) => {
         setNotes(recNotes.data); // Set the received notes to state
         console.log(recNotes.data); // Log for debug
       });
@@ -39,7 +40,7 @@ function App() {
               }
 
               if (e.key === "Enter" && e.target.value.trim() !== "") {
-                const text = await axios.post("http://localhost:3000/notes", {
+                const text = await axios.post(`${baseURL}/notes`, {
                   text: inputData,
                 });
 
@@ -62,7 +63,7 @@ function App() {
             className="but"
             onClick={async () => {
               if (inputData.trim() !== "") {
-                const text = await axios.post("http://localhost:3000/notes", {
+                const text = await axios.post(`${baseURL}/notes`, {
                   text: inputData,
                 });
 
@@ -99,7 +100,7 @@ function App() {
                     className="del"
                     onClick={async () => {
                       // Filter out the note to be deleted and send updated array
-                      items = await axios.post("http://localhost:3000/notes", {
+                      items = await axios.post(`${baseURL}/notes`, {
                         notes: notes.filter((note) => note.id !== data.id),
                       });
 
