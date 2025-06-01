@@ -44,7 +44,7 @@ The backend uses a minimal setup with Express and an in-memory array to store no
 1. Clone the repo:
 
 ```bash
-git clone https://github.com/yourusername/notes-app.git
+git clone https://github.com/harikrishnan-git/notes-app.git
 cd notes-app
 ```
 
