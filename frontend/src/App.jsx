@@ -1,21 +1,21 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import toast, { Toaster } from "react-hot-toast";
-import { MdDelete } from "react-icons/md";
+import toast, { Toaster } from "react-hot-toast"; // For toast notifications
+import { MdDelete } from "react-icons/md"; // Delete icon
 import "./App.css";
 
 function App() {
-  const [notes, setNotes] = useState([]);
-  const [inputData, setInputData] = useState("");
+  let items = []; // Temporary variable for holding updated notes
+  const [notes, setNotes] = useState([]); // State to store notes
+  const [inputData, setInputData] = useState(""); // State to store input value
 
+  // useEffect runs once on component mount to fetch existing notes
   useEffect(() => {
     const func = async () => {
-      const recNotes = axios
-        .get("http://localhost:3000/notes")
-        .then((recNotes) => {
-          setNotes(recNotes.data);
-          console.log(recNotes.data);
-        });
+      axios.get("http://localhost:3000/notes").then((recNotes) => {
+        setNotes(recNotes.data); // Set the received notes to state
+        console.log(recNotes.data); // Log for debug
+      });
     };
     func();
   }, []);
@@ -24,29 +24,36 @@ function App() {
     <>
       <center>
         <h1 className="heading">📝 Note-Maker</h1>
+
+        {/* Input section */}
         <div className="input-container">
           <input
             value={inputData}
             onChange={(e) => {
-              setInputData(e.target.value);
+              setInputData(e.target.value); // Update input on typing
             }}
             onKeyUp={async (e) => {
+              // Handle Enter key press
               if (e.key === "Enter" && e.target.value.trim() === "") {
-                toast.error("No text Entered!!!");
+                toast.error("No text Entered!!!"); // Show error if empty
               }
+
               if (e.key === "Enter" && e.target.value.trim() !== "") {
                 const text = await axios.post("http://localhost:3000/notes", {
                   text: inputData,
                 });
+
                 if (text.data.text === inputData) {
-                  toast.success("Note added.");
-                  setNotes([...notes, text.data]);
+                  toast.success("Note added."); // Show success
+                  setNotes([...notes, text.data]); // Append new note
                   console.log(text.data);
                 } else {
                   toast.error("Failed to add note!!!");
                   console.log(text);
                 }
               }
+
+              // Clear input after Enter
               e.key === "Enter" && setInputData("");
             }}
             placeholder="Add notes...."
@@ -58,11 +65,15 @@ function App() {
                 const text = await axios.post("http://localhost:3000/notes", {
                   text: inputData,
                 });
+
                 if (text.data.text === inputData) {
                   toast.success("Note added.");
                   setNotes([...notes, text.data]);
-                } else toast.error("Failed to add note!!!");
-                setInputData("");
+                } else {
+                  toast.error("Failed to add note!!!");
+                }
+
+                setInputData(""); // Clear input after adding
               } else {
                 toast.error("No text Entered!!!");
               }
@@ -71,19 +82,33 @@ function App() {
             Add
           </button>
         </div>
+
         <br />
         <br />
+
+        {/* Notes display */}
         <ul>
           {(() => {
             try {
               return notes.map((data, index) => (
                 <li key={data.id || index}>
                   {data.text}
+
+                  {/* Delete button */}
                   <button
                     className="del"
                     onClick={async () => {
-                      setNotes(notes.filter((note) => note.id !== data.id));
-                      toast.success("Note deleted.");
+                      // Filter out the note to be deleted and send updated array
+                      items = await axios.post("http://localhost:3000/notes", {
+                        notes: notes.filter((note) => note.id !== data.id),
+                      });
+
+                      if (items.data.length === notes.length - 1) {
+                        toast.success("Note deleted.");
+                        setNotes(items.data); // Update state with new notes
+                      } else {
+                        toast.error("Failed to delete note!!!");
+                      }
                     }}
                   >
                     <MdDelete />
@@ -99,6 +124,7 @@ function App() {
         </ul>
       </center>
 
+      {/* Toast container */}
       <Toaster />
     </>
   );
