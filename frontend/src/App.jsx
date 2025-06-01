@@ -82,16 +82,8 @@ function App() {
                   <button
                     className="del"
                     onClick={async () => {
-                      const del = await axios.delete(
-                        `http://localhost:3000/notes/${data.id}`
-                      );
-                      if (del.status === 200) {
-                        toast.success("Note deleted.");
-                        setNotes(notes.filter((note) => note.id !== data.id));
-                      } else {
-                        console.error(del);
-                        toast.error("Failed to delete note!!!");
-                      }
+                      setNotes(notes.filter((note) => note.id !== data.id));
+                      toast.success("Note deleted.");
                     }}
                   >
                     <MdDelete />

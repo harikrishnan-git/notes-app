@@ -46,18 +46,18 @@ app.post("/notes", (req, res) => {
 });
 
 // Endpoint to delete a note at /notes/:id
-app.delete("/notes/:id", (req, res) => {
-  try {
-    const { id } = req.params; // Extract id from request parameters
-    // Find the index of the note with the given id
-    const index = items.findIndex((item) => item.id === parseInt(id));
-    if (index === -1) {
-      return res.status(404).json({ error: "Note not found" });
-    }
-    items.splice(index, 1); // Remove the note from the array
-    res.status(200).json({ message: "Note deleted successfully" }); // Return success message
-  } catch (error) {
-    console.error("Error deleting note:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
+// app.delete("/notes/:id", (req, res) => {
+//   try {
+//     const { id } = req.params; // Extract id from request parameters
+//     // Find the index of the note with the given id
+//     const index = items.findIndex((item) => item.id === parseInt(id));
+//     if (index === -1) {
+//       return res.status(404).json({ error: "Note not found" });
+//     }
+//     items.splice(index, 1); // Remove the note from the array
+//     res.status(200).json({ message: "Note deleted successfully" }); // Return success message
+//   } catch (error) {
+//     console.error("Error deleting note:", error);
+//     res.status(500).json({ error: "Internal Server Error" });
+//   }
+// });
