@@ -4,11 +4,17 @@ A simple notes application built with Node.js (Express) backend and React fronte
 
 ---
 
+# Approach
+
+The backend uses a minimal setup with Express and an in-memory array to store notes, avoiding the need for a database. Only two endpoints are used as per the requirement. Instead of a DELETE route, deletion is achieved by sending a filtered array of notes back via the POST /notes route. The frontend uses Vite and communicates with the backend using Axios, managing all notes through React state and providing user-friendly feedback using react-hot-toast.
+
+---
+
 ## Features
 
 - Add new notes
 - View existing notes
-- Delete notes locally in the frontend UI
+- Delete existing notes
 
 ---
 
@@ -18,7 +24,9 @@ A simple notes application built with Node.js (Express) backend and React fronte
 - In-memory notes store (array)
 - Two API endpoints only:
   - `GET /notes` - returns all notes
-  - `POST /notes` - adds a new note `{ text: string }`
+  - `POST /notes` - Serves two functionalities:
+    - `Add a new note`: Pass `{text: string}` in the request body to create and store a new note.
+    - `Delete a note`: Pass `notes: Note[]` with the updated array (excluding the deleted note). This replaces the internal store with the provided array.
 
 ---
 
@@ -27,13 +35,7 @@ A simple notes application built with Node.js (Express) backend and React fronte
 - React app (Vite-based)
 - Displays notes fetched from backend
 - Allows adding new notes (POST to backend)
-- Shows a delete button next to each note (deletes note from UI only)
-
----
-
-## Important Note on Delete Functionality
-
-Due to assignment constraints allowing **only GET and POST endpoints on the backend**, the delete button removes notes **only from the frontend state** and does **not** delete notes from the backend server. Deleting notes server-side would require a DELETE or PUT endpoint, which is beyond the current spec.
+- Shows a delete button next to each note for deletion
 
 ---
 
