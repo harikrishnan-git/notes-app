@@ -24,9 +24,8 @@ input {
   border-radius: 8px;
   font-size: 16px;
   width: 300px;
-  max-width: 100%; /* Prevents overflow on small screens */
+  max-width: 80%; /* Prevents overflow on small screens */
   outline: none;
-  margin-top: 5%;
 }
 
 /* Button styling */
@@ -45,4 +44,44 @@ input {
 
 .but:hover {
   background-color: #0056b3;
+}
+
+li {
+  list-style: none;
+  margin: 10px 0;
+}
+ul {
+  padding: 0;
+  margin: 20px auto;
+  max-width: 90%; /* Limit width for better readability */
+}
+ul li {
+  background-color: #cfd1d3;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.3s ease;
+  margin-bottom: 10px;
+  font-size: 18px;
+  color: #333;
+}
+ul li:hover {
+  background-color: #e9ecef;
+}
+
+.del {
+  margin: 5px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.del:hover {
+  background-color: #ca2e3e;
 }

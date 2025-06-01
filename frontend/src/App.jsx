@@ -1,65 +1,109 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
+import { MdDelete } from "react-icons/md";
 import "./App.css";
 
 function App() {
   const [notes, setNotes] = useState([]);
-  const [text, setText] = useState("");
   const [inputData, setInputData] = useState("");
 
   useEffect(() => {
-    const recNotes = axios.get("/notes");
-    setNotes(recNotes);
+    const func = async () => {
+      const recNotes = axios
+        .get("http://localhost:3000/notes")
+        .then((recNotes) => {
+          setNotes(recNotes.data);
+          console.log(recNotes.data);
+        });
+    };
+    func();
   }, []);
 
   return (
     <>
       <center>
         <h1 className="heading">📝 Note-Maker</h1>
-        <input
-          value={inputData}
-          onChange={(e) => {
-            setInputData(e.target.value);
-          }}
-          onKeyUp={(e) => {
-            if (e.key === "Enter" && e.target.value.trim() === "") {
-              toast.error("No text Entered!!!");
-            }
-            if (e.key === "Enter" && e.target.value.trim() !== "") {
-              const text = axios.post("/notes", {
-                text: inputData,
-              });
-              if (text === inputData) toast.success("Note added.");
-              else toast.error("Failed to add note!!!");
-            }
-            e.key === "Enter" && setInputData("");
-          }}
-          placeholder="Add notes...."
-        />
-        <button
-          className="but"
-          onClick={() => {
-            if (inputData.trim() !== "") {
-              axios.post("/notes", {
-                text: inputData,
-              });
-              setInputData("");
-            } else {
-              toast.error("No text Entered!!!");
-            }
-          }}
-        >
-          Submit
-        </button>
+        <div className="input-container">
+          <input
+            value={inputData}
+            onChange={(e) => {
+              setInputData(e.target.value);
+            }}
+            onKeyUp={async (e) => {
+              if (e.key === "Enter" && e.target.value.trim() === "") {
+                toast.error("No text Entered!!!");
+              }
+              if (e.key === "Enter" && e.target.value.trim() !== "") {
+                const text = await axios.post("http://localhost:3000/notes", {
+                  text: inputData,
+                });
+                if (text.data.text === inputData) {
+                  toast.success("Note added.");
+                  setNotes([...notes, text.data]);
+                  console.log(text.data);
+                } else {
+                  toast.error("Failed to add note!!!");
+                  console.log(text);
+                }
+              }
+              e.key === "Enter" && setInputData("");
+            }}
+            placeholder="Add notes...."
+          />
+          <button
+            className="but"
+            onClick={async () => {
+              if (inputData.trim() !== "") {
+                const text = await axios.post("http://localhost:3000/notes", {
+                  text: inputData,
+                });
+                if (text.data.text === inputData) {
+                  toast.success("Note added.");
+                  setNotes([...notes, text.data]);
+                } else toast.error("Failed to add note!!!");
+                setInputData("");
+              } else {
+                toast.error("No text Entered!!!");
+              }
+            }}
+          >
+            Add
+          </button>
+        </div>
         <br />
         <br />
         <ul>
-          {notes.map((index, data) => {
-            <li key={index}>
-              <p>data.text</p>
-            </li>;
-          })}
+          {(() => {
+            try {
+              return notes.map((data, index) => (
+                <li key={data.id || index}>
+                  {data.text}
+                  <button
+                    className="del"
+                    onClick={async () => {
+                      const del = await axios.delete(
+                        `http://localhost:3000/notes/${data.id}`
+                      );
+                      if (del.status === 200) {
+                        toast.success("Note deleted.");
+                        setNotes(notes.filter((note) => note.id !== data.id));
+                      } else {
+                        console.error(del);
+                        toast.error("Failed to delete note!!!");
+                      }
+                    }}
+                  >
+                    <MdDelete />
+                  </button>
+                </li>
+              ));
+            } catch (error) {
+              toast.error("Failed to load notes!!!");
+              console.error(error);
+              return null;
+            }
+          })()}
         </ul>
       </center>
 
